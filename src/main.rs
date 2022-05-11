@@ -1,3 +1,37 @@
-fn main() {
-  println!("Hello, world!");
+use log::{info, LevelFilter};
+
+mod sites;
+
+async fn root() -> &'static str {
+  "Hello, World!"
+}
+
+async fn kouan() -> axum::response::Result<impl axum::response::IntoResponse> {
+  let r = sites::kouan::fetch().await;
+  let msg = r.map_err(|it| axum::response::ErrorResponse::from(it.to_string()))?;
+  axum::response::Response::builder()
+    .header("content-type", "application/rss+xml")
+    .body(axum::body::Full::from(msg))
+    .map_err(|err| axum::response::ErrorResponse::from(err.to_string()))
+}
+
+fn main() -> anyhow::Result<()> {
+  let mut log_builder = env_logger::Builder::from_default_env();
+  log_builder.filter_level(LevelFilter::Info);
+  log_builder.init();
+  let rt = tokio::runtime::Builder::new_multi_thread().enable_all().build()?;
+  rt.block_on(async {
+    use axum::{
+      routing::get,
+      Router,
+    };
+    let app = Router::new()
+      .route("/", get(root))
+      .route("/kouan", get(kouan));
+
+    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
+      .serve(app.into_make_service())
+      .await?;
+    Ok(())
+  })
 }

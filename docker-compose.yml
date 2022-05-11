@@ -1,0 +1,21 @@
+---
+version: '3.9'
+services:
+  web:
+    image: 'rss-feed_web'
+    build:
+      context: '.'
+    container_name: 'rss-feed_web'
+    hostname: 'rss-feed_web'
+    user: "${UID}:${GID}"
+    environment:
+      - 'RUST_LOG=debug'
+    restart: always
+    expose:
+      - '3000'
+    networks:
+      - 'planet-link'
+
+networks:
+  planet-link:
+    external: true

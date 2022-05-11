@@ -1,0 +1,12 @@
+.git
+.github
+.vscode
+.idea
+.gitignore
+.dockerignore
+var
+README.md
+LICENSE
+Makefile
+docker-compose.yml
+Dockerfile

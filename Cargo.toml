@@ -1,5 +1,5 @@
 [package]
-name = "kouan-rss"
+name = "rss_kouan"
 version = "0.1.0"
 edition = "2021"
 

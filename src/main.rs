@@ -16,9 +16,7 @@ async fn kouan() -> axum::response::Result<impl axum::response::IntoResponse> {
 }
 
 fn main() -> anyhow::Result<()> {
-  let mut log_builder = env_logger::Builder::from_default_env();
-  log_builder.filter_level(LevelFilter::Info);
-  log_builder.init();
+  tracing_subscriber::fmt::init();
   let rt = tokio::runtime::Builder::new_multi_thread().enable_all().build()?;
   rt.block_on(async {
     use axum::{

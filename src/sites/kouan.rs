@@ -1,6 +1,3 @@
-use std::borrow::BorrowMut;
-use std::ptr::hash;
-use log::info;
 use rss::Channel;
 use sha2::Digest;
 

@@ -1,5 +1,3 @@
-use log::{info, LevelFilter};
-
 mod sites;
 
 async fn root() -> &'static str {

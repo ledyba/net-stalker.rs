@@ -7,7 +7,9 @@ COPY . .
 RUN cargo install --path .
 
 FROM alpine:3.15
-RUN apk add --no-cache libc-dev openssl-dev pkgconfig
+
+RUN apk update \
+ && apk add --no-cache libc-dev openssl-dev pkgconfig
 
 COPY --from=builder /usr/local/cargo/bin/rss_kouan /usr/local/bin/rss_kouan
 EXPOSE 3000

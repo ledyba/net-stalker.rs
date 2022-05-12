@@ -1,3 +1,5 @@
+# FIXME: Would like use alpine.
+
 FROM rust:latest as builder
 WORKDIR /usr/src/app
 

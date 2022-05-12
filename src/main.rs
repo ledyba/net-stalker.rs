@@ -1,11 +1,18 @@
 mod sites;
 
+use axum::Extension;
+use tower::ServiceBuilder;
+use tower_http::add_extension::AddExtensionLayer;
+use tower_http::trace::TraceLayer;
+
 async fn root() -> &'static str {
   "Hello, World!"
 }
 
-async fn kouan() -> axum::response::Result<impl axum::response::IntoResponse> {
-  let r = sites::kouan::fetch().await;
+async fn kouan(
+  Extension(state): Extension<sites::SharedState>,
+) -> axum::response::Result<impl axum::response::IntoResponse> {
+  let r = sites::kouan::fetch(state.clone()).await;
   let msg = r.map_err(|it| axum::response::ErrorResponse::from(it.to_string()))?;
   axum::response::Response::builder()
     .header("content-type", "application/rss+xml")
@@ -23,7 +30,13 @@ fn main() -> anyhow::Result<()> {
     };
     let app = Router::new()
       .route("/", get(root))
-      .route("/kouan", get(kouan));
+      .route("/kouan", get(kouan))
+      .layer(
+        ServiceBuilder::new()
+          .layer(TraceLayer::new_for_http())
+          .layer(AddExtensionLayer::new(sites::SharedState::default()))
+          .into_inner(),
+      );
 
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
       .serve(app.into_make_service())

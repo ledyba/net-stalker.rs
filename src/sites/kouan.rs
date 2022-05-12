@@ -1,13 +1,41 @@
+use std::time::Duration;
+use log::info;
 use rss::Channel;
 use sha2::Digest;
+use super::*;
 
-pub async fn fetch() -> anyhow::Result<String> {
-  let resp =
-    reqwest::get("https://www.moj.go.jp/psia/index.html")
-      .await?
-      .text_with_charset("UTF-8")
-      .await?;
-  let doc = scraper::Html::parse_document(&resp);
+const URL: &'static str = "https://www.moj.go.jp/psia/index.html";
+pub async fn get() -> reqwest::Result<String> {
+  info!("Fetched");
+  reqwest::get(URL)
+    .await?
+    .text_with_charset("UTF-8")
+    .await
+}
+
+const KEY: &'static str = "kouan";
+pub async fn fetch(state: SharedState) -> anyhow::Result<String> {
+  let mut state = state.lock().await;
+  let content = if let Some(entry) = state.cache.get_mut(KEY) {
+    if (std::time::Instant::now() - entry.instant) < Duration::from_secs(3600) {
+      entry.content.clone()
+    } else {
+      let content = get().await?;
+      *entry = CacheEntry {
+        instant: std::time::Instant::now(),
+        content: content.clone(),
+      };
+      content
+    }
+  } else {
+    let content = get().await?;
+    state.cache.insert(KEY.to_string(), CacheEntry {
+      instant: std::time::Instant::now(),
+      content: content.clone(),
+    });
+    content
+  };
+  let doc = scraper::Html::parse_document(&content);
   let news = find_news(&doc);
   if let Some(news) = news {
     return Ok(news.to_string());

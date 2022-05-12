@@ -9,7 +9,8 @@ services:
     hostname: 'rss-feed_web'
     user: "${UID}:${GID}"
     environment:
-      - 'RUST_LOG=debug'
+#      - 'LDFLAGS=-Wl,-z,stack-size=16777216' #16MB
+      - 'RUST_LOG=INFO'
     restart: always
     expose:
       - '3000'

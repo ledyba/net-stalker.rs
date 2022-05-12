@@ -1,9 +1,7 @@
 mod sites;
 
 use axum::Extension;
-use tower::ServiceBuilder;
 use tower_http::add_extension::AddExtensionLayer;
-use tower_http::trace::TraceLayer;
 
 async fn root() -> &'static str {
   "Hello, World!"
@@ -31,12 +29,7 @@ fn main() -> anyhow::Result<()> {
     let app = Router::new()
       .route("/", get(root))
       .route("/kouan", get(kouan))
-      .layer(
-        ServiceBuilder::new()
-          .layer(TraceLayer::new_for_http())
-          .layer(AddExtensionLayer::new(sites::SharedState::default()))
-          .into_inner(),
-      );
+      .layer(AddExtensionLayer::new(sites::SharedState::default()));
 
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
       .serve(app.into_make_service())

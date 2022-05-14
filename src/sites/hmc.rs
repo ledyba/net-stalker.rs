@@ -1,13 +1,12 @@
 use rss::Channel;
-use sha2::Digest;
 use super::*;
 
-pub struct Kouan {}
+pub struct HMC {}
 
-impl Site for Kouan {
+impl Site for HMC {
   fn fetch(&self) -> Pin<Box<dyn Future<Output=anyhow::Result<String>> + Send>> {
     Box::pin(async {
-      let content = reqwest::get("https://www.moj.go.jp/psia/index.html")
+      let content = reqwest::get("https://hmc.u-tokyo.ac.jp/ja/open-seminar/")
         .await?
         .text_with_charset("UTF-8")
         .await?;
@@ -23,28 +22,26 @@ impl Site for Kouan {
 }
 
 fn build_rss(doc: &scraper::Html) -> Option<Channel> {
-  let selector = scraper::Selector::parse(".newsList").unwrap();
+  let selector = scraper::Selector::parse(".list").unwrap();
   let mut selected = doc.select(&selector);
   if let Some(elem) = selected.next() {
     let mut channel = Channel::default();
     channel.set_language("ja".to_string());
-    channel.set_title("公安調査庁".to_string());
-    channel.set_description("すべては国民の安全のために".to_string());
-    channel.set_copyright("Copyright (C) Public Security Intelligence Agency All Rights Reserved.".to_string());
-    channel.set_link("https://www.moj.go.jp/psia/index.html".to_string());
+    channel.set_title("東京大学 ヒューマニティーズセンター オープンセミナー".to_string());
+    channel.set_description("「公募研究」の採択者を中心にして「オープンセミナー」を一般公開形式で開催することになりました。参加料は無料です。奮ってご参加ください。".to_string());
+    channel.set_copyright(" © 2017 The University of Tokyo Humanities Center ".to_string());
+    channel.set_link("https://hmc.u-tokyo.ac.jp/ja/open-seminar/".to_string());
     let mut items = Vec::<rss::Item>::new();
-    let selector = scraper::Selector::parse("a").unwrap();
+    let selector = scraper::Selector::parse(".title > a").unwrap();
     for elem in elem.select(&selector) {
+      let link = elem.value().attr("href").map(ToString::to_string).unwrap();
       let mut item = rss::Item::default();
       item.set_title(elem.inner_html());
-      item.set_link(elem.value().attr("href").map(|it| format!("https://www.moj.go.jp{}", it)));
+      item.set_link(link.clone());
       let guid = {
         let mut guid = rss::Guid::default();
-        let mut hasher = sha2::Sha384::default();
-        hasher.update(elem.html());
-        let hash = format!("{:x}", hasher.finalize());
-        guid.set_value(hash.to_string());
-        guid.set_permalink(false);
+        guid.set_value(link.clone());
+        guid.set_permalink(true);
         guid
       };
       item.set_guid(guid);

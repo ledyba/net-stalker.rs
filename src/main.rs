@@ -1,7 +1,6 @@
 mod sites;
 
 use axum::Extension;
-use axum::handler::Handler;
 
 async fn root() -> &'static str {
   "Hello, World!"

@@ -1,19 +1,16 @@
-use std::any;
 use std::collections::HashMap;
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-use axum::body::{Body, Bytes, Full};
+use axum::body::Body;
 use axum::{body, Extension};
 use axum::extract::Path;
-use axum::handler::Handler;
-use axum::http::Request;
-use axum::response::{ErrorResponse, IntoResponse, Response};
-use sha2::digest::Output;
+use axum::response::{IntoResponse, Response};
 
 mod kouan;
+mod hmc;
 
 pub trait Site {
   fn fetch(&self) -> Pin<Box<dyn Future<Output=anyhow::Result<String>> + Send>>;
@@ -39,6 +36,10 @@ impl Service {
     let mut sites: HashMap<String, Arc<tokio::sync::RwLock<Entry>>> = Default::default();
     sites.insert("kouan".to_string(), Arc::new(tokio::sync::RwLock::new(Entry {
       site: Box::new(kouan::Kouan{}),
+      cache: None,
+    })));
+    sites.insert("hmc".to_string(), Arc::new(tokio::sync::RwLock::new(Entry {
+      site: Box::new(hmc::HMC{}),
       cache: None,
     })));
     Self {
@@ -99,19 +100,3 @@ pub async fn serve(
 ) -> impl IntoResponse {
   service.serve(name).await
 }
-/*
-
-pub async fn nop() -> Response<Body> {
-  build_resp("zoi")
-}
-
-pub async fn call() {
-  check(serve);
-}
-
-pub async fn check(
-  f: impl Handler<(Path<String>, Extension<Service>), Request<Body>>
-) {
-
-}
-*/

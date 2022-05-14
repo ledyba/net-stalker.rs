@@ -2,8 +2,9 @@ use std::any;
 use std::collections::HashMap;
 use std::future::Future;
 use std::pin::Pin;
-use std::sync::{Arc, RwLock};
+use std::sync::Arc;
 use std::time::{Duration, Instant};
+
 use axum::body::{Body, Bytes, Full};
 use axum::{body, Extension};
 use axum::extract::Path;
@@ -30,21 +31,18 @@ struct Cache {
 
 #[derive(Clone)]
 pub struct Service {
-  sites: Arc<RwLock<HashMap<String, Arc<tokio::sync::RwLock<Entry>>>>>,
+  sites: Arc<std::sync::RwLock<HashMap<String, Arc<tokio::sync::RwLock<Entry>>>>>,
 }
 
 impl Service {
   pub fn new() -> Self {
-    let mut sites:Arc<RwLock<HashMap<String, Arc<tokio::sync::RwLock<Entry>>>>> = Default::default();
-    {
-      let mut dict = sites.write().unwrap();
-      dict.insert("kouan".to_string(), Arc::new(tokio::sync::RwLock::new(Entry {
-        site: Box::new(kouan::Kouan{}),
-        cache: None,
-      })));
-    }
+    let mut sites: HashMap<String, Arc<tokio::sync::RwLock<Entry>>> = Default::default();
+    sites.insert("kouan".to_string(), Arc::new(tokio::sync::RwLock::new(Entry {
+      site: Box::new(kouan::Kouan{}),
+      cache: None,
+    })));
     Self {
-      sites,
+      sites: Arc::new(std::sync::RwLock::new(sites)),
     }
   }
 

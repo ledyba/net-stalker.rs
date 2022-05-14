@@ -12,3 +12,9 @@ cargo build
 
 # then, open http://lcoalhost:3000/kouan
 ```
+
+# その他
+
+以下のサイトにも対応している。
+
+- [オープンセミナー | 東京大学ヒューマニティーズセンター（HMC）](https://hmc.u-tokyo.ac.jp/ja/open-seminar/)

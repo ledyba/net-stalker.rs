@@ -1,49 +1,29 @@
 use std::time::Duration;
-use log::info;
 use rss::Channel;
 use sha2::Digest;
 use super::*;
 
-const URL: &'static str = "https://www.moj.go.jp/psia/index.html";
-pub async fn get() -> reqwest::Result<String> {
-  info!("Fetched");
-  reqwest::get(URL)
-    .await?
-    .text_with_charset("UTF-8")
-    .await
-}
+pub struct Kouan {}
 
-const KEY: &'static str = "kouan";
-pub async fn fetch(state: SharedState) -> anyhow::Result<String> {
-  let mut state = state.lock().await;
-  let content = if let Some(entry) = state.cache.get_mut(KEY) {
-    if (std::time::Instant::now() - entry.instant) < Duration::from_secs(3600) {
-      entry.content.clone()
-    } else {
-      let content = get().await?;
-      *entry = CacheEntry {
-        instant: std::time::Instant::now(),
-        content: content.clone(),
-      };
-      content
-    }
-  } else {
-    let content = get().await?;
-    state.cache.insert(KEY.to_string(), CacheEntry {
-      instant: std::time::Instant::now(),
-      content: content.clone(),
-    });
-    content
-  };
-  let doc = scraper::Html::parse_document(&content);
-  let news = find_news(&doc);
-  if let Some(news) = news {
-    return Ok(news.to_string());
+impl Site for Kouan {
+  fn fetch(&self) -> Pin<Box<dyn Future<Output=anyhow::Result<String>> + Send>> {
+    Box::pin(async {
+      let content = reqwest::get("https://www.moj.go.jp/psia/index.html")
+        .await?
+        .text_with_charset("UTF-8")
+        .await?;
+
+      let doc = scraper::Html::parse_document(&content);
+      let news = build_rss(&doc);
+      if let Some(news) = news {
+        return Ok(news.to_string());
+      }
+      Err(anyhow::Error::msg("News not found"))
+    })
   }
-  Err(anyhow::Error::msg("News not found"))
 }
 
-fn find_news(doc: &scraper::Html) -> Option<rss::Channel> {
+fn build_rss(doc: &scraper::Html) -> Option<Channel> {
   let selector = scraper::Selector::parse(".newsList").unwrap();
   let mut selected = doc.select(&selector);
   if let Some(elem) = selected.next() {

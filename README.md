@@ -18,3 +18,4 @@ cargo build
 以下のサイトにも対応している。
 
 - [オープンセミナー | 東京大学ヒューマニティーズセンター（HMC）](https://hmc.u-tokyo.ac.jp/ja/open-seminar/)
+- [植物Q&A | みんなのひろば | 日本植物生理学会](https://jspp.org/hiroba/q_and_a/)

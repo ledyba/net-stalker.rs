@@ -11,6 +11,7 @@ use axum::response::{IntoResponse, Response};
 
 mod kouan;
 mod hmc;
+mod jspp_hiroba;
 
 pub trait Site {
   fn fetch(&self) -> Pin<Box<dyn Future<Output=anyhow::Result<String>> + Send>>;
@@ -40,6 +41,10 @@ impl Service {
     })));
     sites.insert("hmc".to_string(), Arc::new(tokio::sync::RwLock::new(Entry {
       site: Box::new(hmc::HMC{}),
+      cache: None,
+    })));
+    sites.insert("jspp_hiroba".to_string(), Arc::new(tokio::sync::RwLock::new(Entry {
+      site: Box::new(jspp_hiroba::JsppHiroba{}),
       cache: None,
     })));
     Self {

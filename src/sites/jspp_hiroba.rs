@@ -37,9 +37,10 @@ fn build_rss(doc: &scraper::Html) -> Option<Channel> {
     let selector = scraper::Selector::parse("a").unwrap();
     for elem in elem.select(&selector) {
       let link = elem.value().attr("href").unwrap();
+      let link = BASE_URL.to_owned() + link;
       let mut item = rss::Item::default();
       item.set_title(elem.inner_html());
-      item.set_link(BASE_URL.to_owned() + link);
+      item.set_link(link);
       let guid = {
         let mut guid = rss::Guid::default();
         guid.set_value(link.clone());

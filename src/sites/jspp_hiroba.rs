@@ -40,10 +40,10 @@ fn build_rss(doc: &scraper::Html) -> Option<Channel> {
       let link = BASE_URL.to_owned() + link;
       let mut item = rss::Item::default();
       item.set_title(elem.inner_html());
-      item.set_link(link);
+      item.set_link(link.clone());
       let guid = {
         let mut guid = rss::Guid::default();
-        guid.set_value(link.clone());
+        guid.set_value(link);
         guid.set_permalink(true);
         guid
       };

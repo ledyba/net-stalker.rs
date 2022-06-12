@@ -21,6 +21,8 @@ impl Site for JsppHiroba {
   }
 }
 
+const BASE_URL: &'static str = "https://jspp.org/";
+
 fn build_rss(doc: &scraper::Html) -> Option<Channel> {
   let selector = scraper::Selector::parse(".left > table > tbody").unwrap();
   let mut selected = doc.select(&selector);
@@ -34,10 +36,10 @@ fn build_rss(doc: &scraper::Html) -> Option<Channel> {
     let mut items = Vec::<rss::Item>::new();
     let selector = scraper::Selector::parse("a").unwrap();
     for elem in elem.select(&selector) {
-      let link = elem.value().attr("href").map(ToString::to_string).unwrap();
+      let link = elem.value().attr("href").unwrap();
       let mut item = rss::Item::default();
       item.set_title(elem.inner_html());
-      item.set_link(link.clone());
+      item.set_link(BASE_URL.to_owned() + link);
       let guid = {
         let mut guid = rss::Guid::default();
         guid.set_value(link.clone());

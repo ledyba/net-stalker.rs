@@ -15,3 +15,4 @@ COPY --from=builder /usr/local/cargo/bin/rss_kouan /usr/local/bin/rss_kouan
 EXPOSE 3000
 
 CMD ["rss_kouan"]
+

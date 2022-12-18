@@ -2,11 +2,11 @@
 version: '3.9'
 services:
   web:
-    image: 'rss-feed_web'
+    image: 'rss-feeder_web'
     build:
       context: '.'
-    container_name: 'rss-feed_web'
-    hostname: 'rss-feed_web'
+    container_name: 'rss-feeder_web'
+    hostname: 'rss-feeder_web'
     user: "${UID}:${GID}"
     environment:
 #      - 'LDFLAGS=-Wl,-z,stack-size=16777216' #16MB

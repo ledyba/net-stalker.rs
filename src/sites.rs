@@ -34,22 +34,21 @@ pub struct Service {
 
 impl Service {
   pub fn new() -> Self {
-    let mut sites: HashMap<String, Arc<tokio::sync::RwLock<Entry>>> = Default::default();
-    sites.insert("kouan".to_string(), Arc::new(tokio::sync::RwLock::new(Entry {
-      site: Box::new(kouan::Kouan{}),
+    let mut service = Self {
+      sites: Default::default(),
+    };
+    service.add::<kouan::Kouan>("kouan");
+    service.add::<hmc::HMC>("hmc");
+    service.add::<jspp_hiroba::JsppHiroba>("jspp_hiroba");
+    service
+  }
+
+  fn add<S: Site + Default + Send + Sync + 'static>(&mut self, name: &str) {
+    let mut sites = self.sites.write().expect("[BUG] Lock poisoned");
+    sites.insert(name.to_string(), Arc::new(tokio::sync::RwLock::new(Entry {
+      site: Box::new(S::default()),
       cache: None,
     })));
-    sites.insert("hmc".to_string(), Arc::new(tokio::sync::RwLock::new(Entry {
-      site: Box::new(hmc::HMC{}),
-      cache: None,
-    })));
-    sites.insert("jspp_hiroba".to_string(), Arc::new(tokio::sync::RwLock::new(Entry {
-      site: Box::new(jspp_hiroba::JsppHiroba{}),
-      cache: None,
-    })));
-    Self {
-      sites: Arc::new(std::sync::RwLock::new(sites)),
-    }
   }
 
   pub async fn serve(&mut self, name: String) -> Response<Body> {

@@ -2,6 +2,7 @@ use rss::Channel;
 use sha2::Digest;
 use super::*;
 
+#[derive(Default)]
 pub struct Kouan {}
 
 impl Site for Kouan {

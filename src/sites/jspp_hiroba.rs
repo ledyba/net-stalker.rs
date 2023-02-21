@@ -1,6 +1,7 @@
 use rss::Channel;
 use super::*;
 
+#[derive(Default)]
 pub struct JsppHiroba {}
 
 impl Site for JsppHiroba {

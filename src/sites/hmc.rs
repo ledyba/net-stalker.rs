@@ -1,6 +1,7 @@
 use rss::Channel;
 use super::*;
 
+#[derive(Default)]
 pub struct HMC {}
 
 impl Site for HMC {

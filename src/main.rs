@@ -1,6 +1,5 @@
 mod sites;
 
-use signal_hook::{consts::SIGINT, consts::SIGTERM, iterator::Signals};
 use axum::Extension;
 
 async fn root() -> &'static str {
@@ -10,8 +9,9 @@ async fn root() -> &'static str {
 fn main() -> anyhow::Result<()> {
   tracing_subscriber::fmt::init();
   // Prepare signal handling.
+  use signal_hook::iterator::Signals;
   let (tx, rx) = tokio::sync::oneshot::channel::<()>();
-  let mut signals = Signals::new(&[SIGINT, SIGTERM])?;
+  let mut signals = Signals::new(signal_hook::consts::TERM_SIGNALS)?;
   std::thread::spawn(move || {
     for _sig in signals.forever() {
       tx.send(()).expect("Failed to send signal");

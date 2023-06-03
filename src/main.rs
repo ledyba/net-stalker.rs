@@ -8,6 +8,7 @@ async fn root() -> &'static str {
 
 fn main() -> anyhow::Result<()> {
   tracing_subscriber::fmt::init();
+
   // Prepare signal handling.
   use signal_hook::iterator::Signals;
   let (tx, rx) = tokio::sync::oneshot::channel::<()>();

@@ -11,8 +11,7 @@ RUN cargo install --path .
 
 FROM rust:slim
 
-COPY --from=builder /usr/local/cargo/bin/rss_kouan /usr/local/bin/rss_kouan
+COPY --from=builder /usr/local/cargo/bin/net-stalker /usr/local/bin/net-stalker
 EXPOSE 3000
 
-CMD ["rss_kouan"]
-
+CMD ["net-stalker"]

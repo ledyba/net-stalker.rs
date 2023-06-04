@@ -9,7 +9,6 @@ use axum::{body, Extension};
 use axum::extract::Path;
 use axum::response::{IntoResponse, Response};
 
-mod kouan;
 mod hmc;
 mod jspp_hiroba;
 
@@ -37,7 +36,6 @@ impl Service {
     let mut service = Self {
       sites: Default::default(),
     };
-    service.add::<kouan::Kouan>("kouan");
     service.add::<hmc::HMC>("hmc");
     service.add::<jspp_hiroba::JsppHiroba>("jspp_hiroba");
     service

@@ -4,7 +4,7 @@ FROM rust:latest as builder
 WORKDIR /usr/src/app
 
 RUN apt-get update \
- && apt-get -y install --no-install-recommends libssl-dev
+ && apt-get -y install --no-install-recommends pkg-config libssl-dev
 
 COPY . .
 RUN cargo install --path .

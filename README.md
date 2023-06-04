@@ -1,6 +1,6 @@
 # net-stalker :: RSSフィーダ変換器
 
-あるウェブサイトをスクレイプしてRSSに変換するウェブアプリです。
+一部のウェブサイトをスクレイプしてRSSに変換するウェブアプリです。
 
 # 対応サイト
 
@@ -14,6 +14,6 @@ git clone git@github.com:ledyba/net-stalker.rs.git
 cd net-stalker.rs
 cargo build
 ./target/debug/net-stalker
-
-# then, open http://lcoalhost:3000/kouan
 ```
+
+Then, open [http://lcoalhost:3000/hmc](http://lcoalhost:3000/hmc), for example.

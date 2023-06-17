@@ -25,7 +25,7 @@ impl Site for JsppHiroba {
 const BASE_URL: &'static str = "https://jspp.org/";
 
 fn build_rss(doc: &scraper::Html) -> Option<Channel> {
-  let selector = scraper::Selector::parse(".left > table > tbody").unwrap();
+  let selector = scraper::Selector::parse(".left > table > tbody").expect("[BUG] Invalid selector");
   let mut selected = doc.select(&selector);
   if let Some(elem) = selected.next() {
     let mut channel = Channel::default();
@@ -35,9 +35,11 @@ fn build_rss(doc: &scraper::Html) -> Option<Channel> {
     channel.set_copyright("一般社団法人日本植物生理学会".to_string());
     channel.set_link("https://jspp.org/hiroba/q_and_a/".to_string());
     let mut items = Vec::<rss::Item>::new();
-    let selector = scraper::Selector::parse("a").unwrap();
+    let selector = scraper::Selector::parse("a").expect("[BUG] Invalid selector");
     for elem in elem.select(&selector) {
-      let link = elem.value().attr("href").unwrap();
+      let Some(link) = elem.value().attr("href") else {
+        continue
+      };
       let link = BASE_URL.to_owned() + link;
       let mut item = rss::Item::default();
       item.set_title(elem.inner_html());

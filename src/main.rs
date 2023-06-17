@@ -34,18 +34,22 @@ fn main() -> anyhow::Result<()> {
       routing::get,
       Router,
     };
+
     let app = Router::new()
       .route("/", get(root))
       .route("/:name", get(sites::serve))
       .layer(Extension(sites::Service::new()));
 
-    let server = axum::Server::bind(&"0.0.0.0:3000".parse().expect("[BUG] Failed to parse addr"))
+    let server = 
+      axum::Server::bind(&"0.0.0.0:3000".parse().expect("[BUG] Failed to parse addr"))
       .serve(app.into_make_service());
+
     #[cfg(not(windows))]
     let server = server
       .with_graceful_shutdown(async {
         rx.await.ok();
       });
+
     server.await?;
     Ok(())
   })

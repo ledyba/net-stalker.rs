@@ -40,7 +40,7 @@ fn main() -> anyhow::Result<()> {
       .route("/:name", get(sites::serve))
       .layer(Extension(sites::Service::new()));
 
-    let server = 
+    let server =
       axum::Server::bind(&"0.0.0.0:3000".parse().expect("[BUG] Failed to parse addr"))
       .serve(app.into_make_service());
 

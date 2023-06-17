@@ -23,7 +23,7 @@ impl Site for HMC {
 }
 
 fn build_rss(doc: &scraper::Html) -> Option<Channel> {
-  let selector = scraper::Selector::parse("div.list article.item a").unwrap();
+  let selector = scraper::Selector::parse("div.list article.item a").expect("[BUG] Invalid selector");
   let mut channel = Channel::default();
   channel.set_language("ja".to_string());
   channel.set_title("東京大学 ヒューマニティーズセンター オープンセミナー".to_string());

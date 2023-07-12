@@ -73,10 +73,10 @@ impl Service {
     // read and store
     let mut entry = site.write().await;
     let content = entry.site.fetch().await;
-    if content.is_err() {
+    if let Err(err) = content {
       return Response::builder()
         .status(500)
-        .body(body::Body::from(content.unwrap_err().to_string()))
+        .body(body::Body::from(err.to_string()))
         .unwrap();
     }
     let content = content.unwrap();

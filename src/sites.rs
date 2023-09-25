@@ -11,6 +11,7 @@ use axum::response::{IntoResponse, Response};
 
 mod hmc;
 mod jspp_hiroba;
+mod idwr;
 
 pub trait Site {
   fn fetch(&self) -> Pin<Box<dyn Future<Output=anyhow::Result<String>> + Send>>;
@@ -38,6 +39,7 @@ impl Service {
     };
     service.add::<hmc::HMC>("hmc");
     service.add::<jspp_hiroba::JsppHiroba>("jspp_hiroba");
+    service.add::<idwr::Idwr>("idwr");
     service
   }
 

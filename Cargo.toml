@@ -16,3 +16,5 @@ axum = "0"
 scraper = "0"
 rss = { version = "2", features = ["builders", "atom"] }
 sha2 = "0"
+chrono = "0"
+chrono-tz = "0"

@@ -45,10 +45,12 @@ fn main() -> anyhow::Result<()> {
       .serve(app.into_make_service());
 
     #[cfg(not(windows))]
-    let server = server
-      .with_graceful_shutdown(async {
-        rx.await.ok();
-      });
+    let server = {
+      server
+        .with_graceful_shutdown(async {
+          rx.await.ok();
+        });
+    };
 
     server.await?;
     Ok(())

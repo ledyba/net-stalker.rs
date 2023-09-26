@@ -6,6 +6,7 @@
 
 - [オープンセミナー | 東京大学ヒューマニティーズセンター（HMC）](https://hmc.u-tokyo.ac.jp/ja/open-seminar/)
 - [植物Q&A | みんなのひろば | 日本植物生理学会](https://jspp.org/hiroba/q_and_a/)
+- [感染症発生動向調査週報 (IDWR)](https://www.niid.go.jp/niid/ja/idwr.html)
 
 # How to build and run
 

@@ -49,7 +49,7 @@ fn main() -> anyhow::Result<()> {
       server
         .with_graceful_shutdown(async {
           rx.await.ok();
-        });
+        })
     };
 
     server.await?;

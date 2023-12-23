@@ -13,18 +13,15 @@ impl Site for JsppHiroba {
         .await?;
 
       let doc = scraper::Html::parse_document(&content);
-      let news = build_rss(&doc);
-      if let Some(news) = news {
-        return Ok(news.to_string());
-      }
-      Err(anyhow::Error::msg("News not found"))
+      let news = build_rss(&doc)?;
+      Ok(news.to_string())
     })
   }
 }
 
 const BASE_URL: &'static str = "https://jspp.org/";
 
-fn build_rss(doc: &scraper::Html) -> Option<Channel> {
+fn build_rss(doc: &scraper::Html) -> anyhow::Result<Channel> {
   let selector = scraper::Selector::parse(".left > table > tbody").expect("[BUG] Invalid selector");
   let mut selected = doc.select(&selector);
   if let Some(elem) = selected.next() {
@@ -53,8 +50,11 @@ fn build_rss(doc: &scraper::Html) -> Option<Channel> {
       item.set_guid(guid);
       items.push(item);
     }
+    if items.is_empty() {
+      return Err(anyhow::Error::msg("No items!"));
+    }
     channel.set_items(items);
-    return Some(channel);
+    return Ok(channel);
   }
-  None
+  Err(anyhow::Error::msg("News not found"))
 }

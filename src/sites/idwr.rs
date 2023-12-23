@@ -17,16 +17,13 @@ impl Site for Idwr {
         .await?;
 
       let doc = scraper::Html::parse_document(&content);
-      let news = build_rss(&doc);
-      if let Some(news) = news {
-        return Ok(news.to_string());
-      }
-      Err(anyhow::Error::msg("News not found"))
+      let news = build_rss(&doc)?;
+      Ok(news.to_string())
     })
   }
 }
 
-fn build_rss(doc: &scraper::Html) -> Option<Channel> {
+fn build_rss(doc: &scraper::Html) -> anyhow::Result<Channel> {
   let selector = scraper::Selector::parse("div.blog div.item").expect("[BUG] Invalid selector");
   let mut channel = Channel::default();
   channel.set_language("ja".to_string());
@@ -59,5 +56,8 @@ fn build_rss(doc: &scraper::Html) -> Option<Channel> {
     items.push(item);
   }
   channel.set_items(items);
-  return Some(channel);
+  if items.is_empty() {
+    return Err(anyhow::Error::msg("No items!"));
+  }
+  Ok(channel)
 }

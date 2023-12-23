@@ -49,8 +49,7 @@ fn build_rss(doc: &scraper::Html) -> Option<Channel> {
     item.set_link(link.to_string());
     let guid = {
       let mut guid = rss::Guid::default();
-      guid.set_value(link.to_string());
-      guid.set_permalink(true);
+      guid.set_value(it[0].inner_html());
       guid
     };
     item.set_guid(guid);

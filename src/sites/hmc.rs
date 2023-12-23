@@ -2,7 +2,7 @@ use rss::Channel;
 use super::*;
 
 #[derive(Default)]
-pub struct HMC {}
+pub struct HMC;
 
 impl Site for HMC {
   fn fetch(&self) -> Pin<Box<dyn Future<Output=anyhow::Result<String>> + Send>> {

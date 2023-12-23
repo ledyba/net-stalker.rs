@@ -3,7 +3,7 @@ use rss::Channel;
 use super::*;
 
 #[derive(Default)]
-pub struct Idwr {}
+pub struct Idwr;
 
 impl Site for Idwr {
   fn fetch(&self) -> Pin<Box<dyn Future<Output=anyhow::Result<String>> + Send>> {

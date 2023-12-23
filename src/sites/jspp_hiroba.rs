@@ -2,7 +2,7 @@ use rss::Channel;
 use super::*;
 
 #[derive(Default)]
-pub struct JsppHiroba {}
+pub struct JsppHiroba;
 
 impl Site for JsppHiroba {
   fn fetch(&self) -> Pin<Box<dyn Future<Output=anyhow::Result<String>> + Send>> {

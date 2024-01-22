@@ -13,6 +13,7 @@ mod hmc;
 mod jspp_hiroba;
 mod idwr;
 mod aist_shisan;
+mod akotsu;
 
 pub trait Site {
   fn fetch(&self) -> Pin<Box<dyn Future<Output=anyhow::Result<String>> + Send>>;
@@ -42,6 +43,7 @@ impl Service {
     service.add::<jspp_hiroba::JsppHiroba>("jspp_hiroba");
     service.add::<idwr::Idwr>("idwr");
     service.add::<aist_shisan::AistShisan>("aist_shisan");
+    service.add::<akotsu::Akotsu>("akotsu");
     service
   }
 

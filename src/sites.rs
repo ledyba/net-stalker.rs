@@ -14,6 +14,7 @@ mod jspp_hiroba;
 mod idwr;
 mod aist_shisan;
 mod akotsu;
+mod jamstec;
 
 pub trait Site {
   fn fetch(&self) -> Pin<Box<dyn Future<Output=anyhow::Result<String>> + Send>>;
@@ -44,6 +45,7 @@ impl Service {
     service.add::<idwr::Idwr>("idwr");
     service.add::<aist_shisan::AistShisan>("aist_shisan");
     service.add::<akotsu::Akotsu>("akotsu");
+    service.add::<jamstec::Jamstec>("jamstec");
     service
   }
 

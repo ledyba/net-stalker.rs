@@ -40,16 +40,16 @@ fn main() -> anyhow::Result<()> {
       .route("/:name", get(sites::serve))
       .layer(Extension(sites::Service::new()));
 
-    let server =
-      axum::Server::bind(&"0.0.0.0:3000".parse().expect("[BUG] Failed to parse addr"))
-      .serve(app.into_make_service());
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.expect("[BUG] Failed to parse addr");
+
+    let server = axum::serve(listener, app);
 
     #[cfg(not(windows))]
     let server = {
-      server
-        .with_graceful_shutdown(async {
-          rx.await.ok();
-        })
+      let fut = async {
+        rx.await.ok();
+      };
+      server.with_graceful_shutdown(fut)
     };
 
     server.await?;

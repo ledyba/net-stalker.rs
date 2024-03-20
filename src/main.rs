@@ -18,7 +18,7 @@ fn main() -> anyhow::Result<()> {
     let mut signals = Signals::new(signal_hook::consts::TERM_SIGNALS)?;
     std::thread::spawn(move || {
       for _sig in signals.forever() {
-        tx.send(()).expect("Failed to send signal");
+        tx.send(()).expect("[BUG] Failed to send signal");
         break;
       }
     });
@@ -47,7 +47,7 @@ fn main() -> anyhow::Result<()> {
     #[cfg(not(windows))]
     let server = {
       let fut = async {
-        rx.await.ok();
+        rx.await.expect("[BUG] Failed to recv signal.");
       };
       server.with_graceful_shutdown(fut)
     };

@@ -19,4 +19,4 @@ cargo build
 ./target/debug/net-stalker
 ```
 
-Then, open [http://lcoalhost:3000/hmc](http://lcoalhost:3000/hmc), for example.
+Then, open [http://localhost:3000/hmc](http://localhost:3000/hmc), for example.

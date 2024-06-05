@@ -2,12 +2,20 @@ mod sites;
 
 use axum::Extension;
 
+
 async fn root() -> &'static str {
   "Hello, World!"
 }
 
 fn main() -> anyhow::Result<()> {
-  tracing_subscriber::fmt::init();
+  use tracing_subscriber::util::SubscriberInitExt;
+  tracing_subscriber::fmt()
+    .with_max_level(tracing::Level::INFO)
+    .with_line_number(true)
+    .with_file(true)
+    .with_writer(std::io::stderr)
+    .finish()
+    .init();
 
   #[cfg(not(windows))]
   // Prepare signal handling.

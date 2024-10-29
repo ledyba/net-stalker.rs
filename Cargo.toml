@@ -13,7 +13,7 @@ tokio = { version = "1", features = ["full"] }
 log = "0"
 signal-hook = "0"
 reqwest = { version = "0" }
-axum = "0.7.5"
+axum = "0.7.7"
 scraper = "0"
 rss = { version = "2", features = ["builders", "atom"] }
 sha2 = "0"

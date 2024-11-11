@@ -8,7 +8,7 @@ edition = "2021"
 [dependencies]
 anyhow = "1"
 tracing = "0"
-tracing-subscriber = { version = "0", features = [ "std", "env-filter" ] }
+tracing-subscriber = { version = "0", features = [ "std", "env-filter", "chrono" ] }
 tokio = { version = "1", features = ["full"] }
 log = "0"
 signal-hook = "0"

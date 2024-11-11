@@ -10,6 +10,7 @@ async fn root() -> &'static str {
 fn main() -> anyhow::Result<()> {
   use tracing_subscriber::util::SubscriberInitExt;
   tracing_subscriber::fmt()
+    .with_timer(tracing_subscriber::fmt::time::ChronoLocal::new("%Y/%m/%d %H:%M:%S%.3f".to_string()))
     .with_max_level(tracing::Level::INFO)
     .with_line_number(true)
     .with_file(true)
@@ -38,6 +39,7 @@ fn main() -> anyhow::Result<()> {
     .build()?;
 
   rt.block_on(async {
+    use tracing::info;
     use axum::{
       routing::get,
       Router,
@@ -60,6 +62,7 @@ fn main() -> anyhow::Result<()> {
       server.with_graceful_shutdown(fut)
     };
 
+    info!("Listening on http://localhost:3000/");
     server.await?;
     Ok(())
   })

@@ -2,7 +2,6 @@ mod sites;
 
 use axum::Extension;
 
-
 async fn root() -> &'static str {
   "Hello, World!"
 }
@@ -50,9 +49,10 @@ fn main() -> anyhow::Result<()> {
       .route("/:name", get(sites::serve))
       .layer(Extension(sites::Service::new()));
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.expect("[BUG] Failed to parse addr");
+    let tcp_listener = tokio::net::TcpListener::bind(("0.0.0.0", 3000)).await.expect("[BUG] Failed to parse addr");
+    let socket_addr = tcp_listener.local_addr()?;
 
-    let server = axum::serve(listener, app);
+    let server = axum::serve(tcp_listener, app);
 
     #[cfg(not(windows))]
     let server = {
@@ -62,7 +62,7 @@ fn main() -> anyhow::Result<()> {
       server.with_graceful_shutdown(fut)
     };
 
-    info!("Listening on http://localhost:3000/");
+    info!("Listening on http://localhost:{}/", socket_addr.port());
     server.await?;
     Ok(())
   })

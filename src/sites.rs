@@ -14,6 +14,7 @@ mod jspp_hiroba;
 mod idwr;
 mod aist_shisan;
 mod akotsu;
+mod tokushusagi;
 mod jamstec;
 
 pub trait Site {
@@ -46,6 +47,7 @@ impl Service {
     service.add::<aist_shisan::AistShisan>("aist_shisan");
     service.add::<akotsu::Akotsu>("akotsu");
     service.add::<jamstec::Jamstec>("jamstec");
+    service.add::<tokushusagi::Tokushusagi>("tokushusagi");
     service
   }
 

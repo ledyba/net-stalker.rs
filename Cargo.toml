@@ -6,15 +6,15 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1"
-tracing = "0"
-tracing-subscriber = { version = "0", features = [ "std", "env-filter", "chrono" ] }
-tokio = { version = "1", features = ["full"] }
-signal-hook = "0"
-reqwest = { version = "0" }
-axum = "0.7.7"
-scraper = "0"
-rss = { version = "2", features = ["builders", "atom"] }
-sha2 = "0"
-chrono = "0"
-chrono-tz = "0"
+anyhow = "1.0.93"
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = [ "std", "env-filter", "chrono" ] }
+tokio = { version = "1.41.1", features = ["full"] }
+signal-hook = "0.3.17"
+reqwest = { version = "0.12.9" }
+axum = "0.7.9"
+scraper = "0.21.0"
+rss = { version = "2.0.11", features = ["builders", "atom"] }
+chrono = "0.4.38"
+chrono-tz = "0.10.0"
+urlencoding = "2.1.3"

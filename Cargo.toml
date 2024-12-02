@@ -10,7 +10,7 @@ anyhow = "1.0.93"
 tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.19", features = [ "std", "env-filter", "chrono" ] }
 tokio = { version = "1.41.1", features = ["full"] }
-signal-hook = "0.3.17"
+ctrlc = {  version = "3.4.5", features = ["termination"] }
 reqwest = { version = "0.12.9" }
 axum = "0.7.9"
 scraper = "0.21.0"

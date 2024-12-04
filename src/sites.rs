@@ -16,6 +16,7 @@ mod aist_shisan;
 mod akotsu;
 mod tokushusagi;
 mod jamstec;
+mod windress;
 
 pub trait Site {
   fn fetch(&self) -> Pin<Box<dyn Future<Output=anyhow::Result<String>> + Send>>;
@@ -48,6 +49,7 @@ impl Service {
     service.add::<akotsu::Akotsu>("akotsu");
     service.add::<jamstec::Jamstec>("jamstec");
     service.add::<tokushusagi::Tokushusagi>("tokushusagi");
+    service.add::<windress::Windress>("windress");
     service
   }
 

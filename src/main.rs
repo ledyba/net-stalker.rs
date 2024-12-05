@@ -23,7 +23,7 @@ fn main() -> anyhow::Result<()> {
   let rt = std::sync::Arc::new(rt);
 
   let shutdown_notify = {
-    use std::sync::Arc;;
+    use std::sync::Arc;
     let rt = Arc::clone(&rt);
     let notify = Arc::new(tokio::sync::Notify::new());
     let notify = Arc::clone(&notify);

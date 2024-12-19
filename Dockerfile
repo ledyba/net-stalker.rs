@@ -1,6 +1,6 @@
 # FIXME: Would like use alpine.
 
-FROM rust:latest as builder
+FROM rust:latest AS builder
 WORKDIR /usr/src/app
 
 RUN apt-get update \
@@ -9,9 +9,10 @@ RUN apt-get update \
 COPY . .
 RUN cargo install --path .
 
-FROM rust:slim
+FROM gcr.io/distroless/cc-debian12:nonroot
 
-COPY --from=builder /usr/local/cargo/bin/net-stalker /usr/local/bin/net-stalker
+COPY --chown=nonroot:nonroot --from=builder /usr/local/cargo/bin/net-stalker /net-stalker
 EXPOSE 3000
+USER nonroot
+ENTRYPOINT [ "/net-stalker" ]
 
-CMD ["net-stalker"]

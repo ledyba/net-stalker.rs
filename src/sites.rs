@@ -16,6 +16,7 @@ mod aist_shisan;
 mod akotsu;
 mod tokushusagi;
 mod jamstec;
+mod jscpr;
 mod yomoyomo;
 
 pub trait Site {
@@ -50,6 +51,7 @@ impl Service {
     service.add::<jamstec::Jamstec>("jamstec");
     service.add::<tokushusagi::Tokushusagi>("tokushusagi");
     service.add::<yomoyomo::Yomoyomo>("yomoyomo");
+    service.add::<jscpr::Jscpr>("jscpr");
     service
   }
 

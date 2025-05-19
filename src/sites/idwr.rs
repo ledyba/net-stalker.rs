@@ -1,5 +1,6 @@
 use chrono::Datelike;
 use rss::Channel;
+use scraper::Element;
 use super::*;
 
 #[derive(Default)]
@@ -10,21 +11,21 @@ impl Site for Idwr {
     Box::pin(async {
       let now = chrono::Utc::now();
       let now = now.with_timezone(&chrono_tz::Asia::Tokyo);
-      let url = format!("https://www.niid.go.jp/niid/ja/idwr-dl/{}.html", now.year());
+      let url = format!("https://id-info.jihs.go.jp/surveillance/idwr/jp/idwr/{}/index.html", now.year());
       let content = reqwest::get(&url)
         .await?
         .text_with_charset("UTF-8")
         .await?;
 
       let doc = scraper::Html::parse_document(&content);
-      let news = build_rss(&doc)?;
+      let news = build_rss(&url, &doc)?;
       Ok(news.to_string())
     })
   }
 }
 
-fn build_rss(doc: &scraper::Html) -> anyhow::Result<Channel> {
-  let selector = scraper::Selector::parse("div.blog div.item").expect("[BUG] Invalid selector");
+fn build_rss(url: &str, doc: &scraper::Html) -> anyhow::Result<Channel> {
+  let base_url = url::Url::parse(url)?;
   let mut channel = Channel::default();
   channel.set_language("ja".to_string());
   channel.set_title("感染症発生動向調査週報".to_string());
@@ -32,20 +33,22 @@ fn build_rss(doc: &scraper::Html) -> anyhow::Result<Channel> {
   channel.set_copyright("Copyright 1998 National Institute of Infectious Diseases, Japan ".to_string());
   channel.set_link("https://www.niid.go.jp/niid/ja/idwr.html".to_string());
   let mut items = Vec::<rss::Item>::new();
-  let title_selector = scraper::Selector::parse("p > strong").expect("[BUG] Invalid selector");
-  let link_selector = scraper::Selector::parse(".body1 a").expect("[BUG] Invalid selector");
-  for elem in doc.select(&selector) {
-    let Some(title_elem) = elem.select(&title_selector).next() else {
+  let link_selector = scraper::Selector::parse("a.sizeview").expect("[BUG] Invalid selector");
+  for link_elem in doc.select(&link_selector) {
+    let Some(paragraph_elem) = link_elem.parent_element() else {
       continue;
     };
+    let Some(title_elem) = paragraph_elem.prev_sibling_element() else {
+      continue;
+    };
+    let Some(link) = link_elem.attr("href").map(ToString::to_string) else {
+      continue;
+    };
+    let link = base_url.join(&link)?;
     let title = title_elem.text().collect::<String>();
-    let Some(link_elem) = elem.select(&link_selector).next() else {
-      continue;
-    };
-    let link = link_elem.value().attr("href").map(ToString::to_string).unwrap();
     let mut item = rss::Item::default();
     item.set_title(title);
-    item.set_link(link.clone());
+    item.set_link(link.to_string());
     let guid = {
       let mut guid = rss::Guid::default();
       guid.set_value(link.clone());

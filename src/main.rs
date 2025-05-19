@@ -46,7 +46,7 @@ fn main() -> anyhow::Result<()> {
 
     let app = Router::new()
       .route("/", get(root))
-      .route("/:name", get(sites::serve))
+      .route("/{name}", get(sites::serve))
       .layer(Extension(sites::Service::new()));
 
     let tcp_listener = tokio::net::TcpListener::bind(("::", 3000)).await.expect("[BUG] Failed to parse addr");

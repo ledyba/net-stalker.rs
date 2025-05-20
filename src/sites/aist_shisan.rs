@@ -52,9 +52,6 @@ fn build_rss(doc: &scraper::Html) -> anyhow::Result<Channel> {
     item.set_guid(guid);
     items.push(item);
   }
-  if items.is_empty() {
-    return Err(anyhow::Error::msg("No items!"));
-  }
   channel.set_items(items);
   Ok(channel)
 }

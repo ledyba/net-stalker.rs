@@ -18,6 +18,7 @@ mod tokushusagi;
 mod jamstec;
 mod jscpr;
 mod yomoyomo;
+mod memo586;
 
 pub trait Site {
   fn fetch(&self) -> Pin<Box<dyn Future<Output=anyhow::Result<String>> + Send>>;
@@ -52,6 +53,7 @@ impl Service {
     service.add::<tokushusagi::Tokushusagi>("tokushusagi");
     service.add::<yomoyomo::Yomoyomo>("yomoyomo");
     service.add::<jscpr::Jscpr>("jscpr");
+    service.add::<memo586::Memo586>("586memo");
     service
   }
 

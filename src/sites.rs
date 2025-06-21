@@ -16,6 +16,7 @@ mod aist_shisan;
 mod akotsu;
 mod tokushusagi;
 mod jamstec;
+mod jamstec_base;
 mod jscpr;
 mod yomoyomo;
 mod memo586;
@@ -50,6 +51,7 @@ impl Service {
     service.add::<aist_shisan::AistShisan>("aist_shisan");
     service.add::<akotsu::Akotsu>("akotsu");
     service.add::<jamstec::Jamstec>("jamstec");
+    service.add::<jamstec_base::JamstecBase>("jamstec_base");
     service.add::<tokushusagi::Tokushusagi>("tokushusagi");
     service.add::<yomoyomo::Yomoyomo>("yomoyomo");
     service.add::<jscpr::Jscpr>("jscpr");

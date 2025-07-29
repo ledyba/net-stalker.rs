@@ -4,7 +4,7 @@ use super::*;
 #[derive(Default)]
 pub struct Tokushusagi;
 
-const BASE_URL: &'static str = "https://www.kagaiboushi.metro.tokyo.lg.jp/";
+const BASE_URL: &'static str = "https://www.kagaiboushi.metro.tokyo.lg.jp/column/";
 
 impl Site for Tokushusagi {
   fn fetch(&self) -> Pin<Box<dyn Future<Output=anyhow::Result<String>> + Send>> {
@@ -29,14 +29,14 @@ fn build_rss(doc: &scraper::Html) -> anyhow::Result<Channel> {
   channel.set_copyright("東京都".to_string());
   channel.set_link("https://www.kagaiboushi.metro.tokyo.lg.jp/".to_string());
   let mut items = Vec::<rss::Item>::new();
-  let selector = scraper::Selector::parse(".column-post-item-thumbnail > a").expect("[BUG] Invalid selector");
+  let selector = scraper::Selector::parse(".column-item > a").expect("[BUG] Invalid selector");
   for elem in doc.select(&selector) {
     let Some(link) = elem.value().attr("href") else {
       continue
     };
-    let title = link.strip_prefix(BASE_URL).expect("[BUG] Invalid link");
-    let title = title.strip_suffix("/").unwrap_or(title);
-    let title = urlencoding::decode(title).expect("[BUG] Invalid title");
+    let selector = scraper::Selector::parse(".column-content > .column-title").expect("[BUG] Invalid selector");
+    let title = elem.select(&selector).next().expect("[BUG] No title");
+    let title = title.inner_html();
     let mut item = rss::Item::default();
     item.set_title(title.to_string());
     item.set_link(link.to_string());
